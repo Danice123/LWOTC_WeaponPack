@@ -25,6 +25,9 @@ static function X2AbilityTemplate AddLMG_MountAbility(name TemplateName = 'Mount
 	local X2AbilityCost_ActionPoints ActionPointCost;
 	local X2Condition_UnitProperty ShooterPropertyCondition;
 	local X2Effect_PersistentStatChange PersistentStatChangeEffect;
+	local X2Effect_Persistent LongWatchToggleEffect;
+	local X2Condition_UnitEffects MountedCondition;
+	local X2Effect_Squadsight Squadsight;
 
 	`CREATE_X2ABILITY_TEMPLATE(Template, TemplateName);
 
@@ -34,7 +37,6 @@ static function X2AbilityTemplate AddLMG_MountAbility(name TemplateName = 'Mount
 	Template.eAbilityIconBehaviorHUD = eAbilityIconBehavior_ShowIfAvailable;
 	Template.IconImage = "img:///UILibrary_PerkIcons.UIPerk_pistoloverwatch";
 	Template.ShotHUDPriority = 150;
-	Template.bNoConfirmationWithHotKey = true;
 	Template.bDisplayInUITooltip = false;
 	Template.bDisplayInUITacticalText = false;
 	Template.DisplayTargetHitChance = false;
@@ -47,18 +49,32 @@ static function X2AbilityTemplate AddLMG_MountAbility(name TemplateName = 'Mount
 	Template.AbilityCosts.AddItem(ActionPointCost);
 
 	ShooterPropertyCondition = new class'X2Condition_UnitProperty';
-	// ShooterPropertyCondition.ExcludeNoCover = true;
+	ShooterPropertyCondition.ExcludeNoCover = true;
 	ShooterPropertyCondition.ExcludeDead = true;
 	Template.AbilityShooterConditions.AddItem(ShooterPropertyCondition);
+
+	MountedCondition = new class'X2Condition_UnitEffects';
+	MountedCondition.AddExcludeEffect(default.MountedEffectName, 'AA_AbilityUnavailable');
+	Template.AbilityShooterConditions.AddItem(MountedCondition);
 
 	InputTrigger = new class'X2AbilityTrigger_PlayerInput';
 	Template.AbilityTriggers.AddItem(InputTrigger);
 
 	PersistentStatChangeEffect = new class'X2Effect_PersistentStatChange';
 	PersistentStatChangeEffect.EffectName = default.MountedEffectName;
-	PersistentStatChangeEffect.BuildPersistentEffect(1, true, false, false);
-	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Offense, 10);
+	PersistentStatChangeEffect.BuildPersistentEffect(1, true, true, false);
+	PersistentStatChangeEffect.AddPersistentStatChange(eStat_Offense, 20);
+	PersistentStatChangeEffect.SetDisplayInfo(ePerkBuff_Passive, Template.LocFriendlyName, Template.GetMyLongDescription(), Template.IconImage,,,Template.AbilitySourceName);
 	Template.AddTargetEffect(PersistentStatChangeEffect);
+
+	LongWatchToggleEffect = new class'X2Effect_Persistent';
+	LongWatchToggleEffect.EffectName = class'X2Ability_LongWatchAbilities'.default.ToggleLongWatchEffect;
+	PersistentStatChangeEffect.BuildPersistentEffect(1, true, true, false);
+	Template.AddTargetEffect(LongWatchToggleEffect);
+
+	Squadsight = new class'X2Effect_Squadsight';
+	Squadsight.BuildPersistentEffect(1, true, true, true);
+	Template.AddTargetEffect(Squadsight);
 
 	Template.BuildNewGameStateFn = TypicalAbility_BuildGameState;
 	Template.BuildVisualizationFn = HunkerDownAbility_BuildVisualization;

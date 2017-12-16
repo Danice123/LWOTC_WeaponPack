@@ -553,11 +553,17 @@
     <Content Include="Localization\SMGs\XComGame.rus">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Localization\XComGame.int">
+      <SubType>Content</SubType>
+    </Content>
     <Content Include="ModPreview.jpg">
       <SubType>Content</SubType>
     </Content>
     <Content Include="ReadMe.txt" />
     <Content Include="Src\LWOTC_WeaponPack\Classes\X2Ability_LMGAbilities.uc">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Src\LWOTC_WeaponPack\Classes\X2Ability_LongWatchAbilities.uc">
       <SubType>Content</SubType>
     </Content>
     <Content Include="Src\LWOTC_WeaponPack\Classes\X2Ability_SMGAbilities.uc">

@@ -26,6 +26,8 @@ static protected function EventListenerReturn CheckForUnmountLMG(Object EventDat
 	local X2TacticalGameRuleset Ruleset;
 	local XComGameState_Unit MovingUnit;
 	local XComGameState_Effect MountedEffect;
+	local XComGameState_Effect ToggleLongWatchEffect;
+	local XComGameState_Effect SquadSightEffect;
 	
 	Ruleset = X2TacticalGameRuleset(`XCOMGAME.GameRuleset);
 	MovingUnit = XComGameState_Unit(EventSource);
@@ -33,8 +35,12 @@ static protected function EventListenerReturn CheckForUnmountLMG(Object EventDat
 
 	if (MountedEffect != none && !MountedEffect.bRemoved)
 	{
+		ToggleLongWatchEffect = MovingUnit.GetUnitAffectedByEffectState(class'X2Ability_LongWatchAbilities'.default.ToggleLongWatchEffect);
+		SquadSightEffect = MovingUnit.GetUnitAffectedByEffectState(class'X2Effect_Squadsight'.default.EffectName);
 		NewGameState = class'XComGameStateContext_ChangeContainer'.static.CreateChangeState("RemoveMountedStatus");
 		MountedEffect.RemoveEffect(NewGameState, GameState);
+		ToggleLongWatchEffect.RemoveEffect(NewGameState, GameState);
+		SquadSightEffect.RemoveEffect(NewGameState, GameState);
 		Ruleset.SubmitGameState(NewGameState);
 	}
 	return ELR_NoInterrupt;
